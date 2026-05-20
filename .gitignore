@@ -20,6 +20,13 @@
 # production
 /build
 
+# admin local database (JSON)
+/data/
+
+# User uploads (logos, claim photos) — keep .gitkeep only in repo
+/public/uploads/*
+!/public/uploads/.gitkeep
+
 # misc
 .DS_Store
 *.pem
@@ -32,6 +39,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel

@@ -1,26 +1,127 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand teal (existing) */
+  --color-surface: #003b49;
+  --color-surface-2: #002f3b;
+  /* Accent cyan */
+  --color-accent: #00d2ff;
+  --color-accent-soft: #7ae8ff;
+  /* Light page (white + cool tint) */
+  --color-page: #f4fafb;
+  --color-page-elevated: #ffffff;
+  --color-band: #e8f5f9;
+  /* Text on light backgrounds */
+  --color-ink: #0c2f3a;
+  --color-ink-muted: #4a6670;
+  /* On dark sections */
+  --color-foreground: #f4fbfb;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--color-page);
+  --color-foreground: var(--color-ink);
+  --font-sans: var(--font-sans-body);
+  --font-heading: var(--font-sans-heading);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-page);
+  background-image: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    var(--color-page) 22%,
+    var(--color-band) 55%,
+    #f0f9fc 100%
+  );
+  color: var(--color-ink);
+  font-family: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-sans-heading), ui-sans-serif, system-ui, sans-serif;
+  /* Colour inherits from body / parent — do not force ink here or hero headlines lose contrast on teal. */
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes workflow-dash {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+@keyframes workflow-swirl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .workflow-swirl-rotate {
+    animation: workflow-swirl-spin 48s linear infinite;
+  }
+  .workflow-swirl-path {
+    animation: workflow-dash 22s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workflow-swirl-rotate,
+  .workflow-swirl-path {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-motion > .hero-inner > * {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-motion > .hero-inner > * {
+    opacity: 0;
+    animation: hero-fade-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .hero-motion > .hero-inner > *:nth-child(1) {
+    animation-delay: 0.06s;
+  }
+  .hero-motion > .hero-inner > *:nth-child(2) {
+    animation-delay: 0.14s;
+  }
+  .hero-motion > .hero-inner > *:nth-child(3) {
+    animation-delay: 0.22s;
+  }
+  .hero-motion > .hero-inner > *:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+  .hero-motion > .hero-inner > *:nth-child(5) {
+    animation-delay: 0.38s;
+  }
+}
+
+/* Extra scroll room when the fixed WhatsApp FAB is shown (mobile + desktop) */
+@supports selector(:has(*)) {
+  body:has(.whatsapp-float) {
+    padding-bottom: max(5.25rem, calc(env(safe-area-inset-bottom, 0px) + 4.5rem));
+  }
 }

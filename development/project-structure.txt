@@ -1,0 +1,15 @@
+BAZOOCLAIMS — folder map
+=======================
+
+public/          Static assets (logo-bazoo.png header; brand/ motor photography PNGs)
+src/app/         Next.js App Router routes and API route handlers
+src/components/  UI: layout (header, footer, WhatsApp FAB), sections, forms
+src/config/      Site copy, navigation, WhatsApp helpers
+src/lib/         Utilities, validators, Supabase placeholders (no live DB yet)
+src/types/       Shared TypeScript types
+
+API: POST /api/claim-intake — validates JSON; returns a reference ID; persistence TBD.
+
+Supabase: edit src/lib/supabase/*.ts after `npm install @supabase/supabase-js` and set .env vars.
+
+WhatsApp FAB: set NEXT_PUBLIC_WHATSAPP_E164 in .env.local (digits only, e.g. 447700900123); green circular FAB with SVG glyph in WhatsAppFloat.tsx.
