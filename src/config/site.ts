@@ -18,6 +18,8 @@ export const siteConfig = {
   locale: "en-GB",
   url: resolveSiteUrl(),
   phoneDisplay: process.env.NEXT_PUBLIC_COMPANY_PHONE ?? "+44 (0) 20 0000 0000",
+  supportEmail:
+    process.env.NEXT_PUBLIC_SUPPORT_EMAIL?.trim() || "support@bazooclaims.com",
 } as const;
 
 export const navLinks = [

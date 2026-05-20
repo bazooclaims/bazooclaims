@@ -68,6 +68,16 @@ export function HeroSection() {
           </Link>
         </div>
 
+        <p className="mx-auto mt-6 max-w-xl text-sm text-white/80 sm:mt-7 lg:mx-0">
+          Questions or need help?{" "}
+          <a
+            href={`mailto:${siteConfig.supportEmail}`}
+            className="font-medium text-[var(--color-accent-soft)] underline decoration-[var(--color-accent-soft)]/40 underline-offset-2 transition hover:text-white hover:decoration-white"
+          >
+            {siteConfig.supportEmail}
+          </a>
+        </p>
+
         <dl className="mx-auto mt-14 grid max-w-2xl gap-4 text-left sm:mt-16 sm:max-w-none sm:grid-cols-3 sm:gap-5 lg:mx-0">
           {[
             { k: "Replacement", v: "Like-for-like priority, typically within 24 hours." },

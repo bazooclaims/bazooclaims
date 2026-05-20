@@ -19,6 +19,15 @@ export function SiteFooter() {
           <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/75">
             {siteConfig.description}
           </p>
+          <p className="mt-4 text-sm text-white/75">
+            Support:{" "}
+            <a
+              href={`mailto:${siteConfig.supportEmail}`}
+              className="font-medium text-[var(--color-accent-soft)] underline-offset-2 hover:underline"
+            >
+              {siteConfig.supportEmail}
+            </a>
+          </p>
           <Link
             href="/start-your-claim"
             className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-[var(--color-accent-soft)] underline-offset-2 hover:underline touch-manipulation"

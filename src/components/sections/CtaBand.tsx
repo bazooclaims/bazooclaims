@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { siteConfig } from "@/config/site";
+
 export function CtaBand() {
   return (
     <section className="border-y border-[var(--color-surface)]/10 bg-gradient-to-br from-[var(--color-page-elevated)] via-[var(--color-band)] to-[var(--color-accent)]/15 py-12 sm:py-14">
@@ -10,7 +12,13 @@ export function CtaBand() {
           </h2>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--color-ink-muted)] sm:text-base">
             Tell us what happened. We respond quickly with a structured plan through our secure
-            claim form.
+            claim form. Prefer email?{" "}
+            <a
+              href={`mailto:${siteConfig.supportEmail}`}
+              className="font-medium text-[var(--color-ink)] underline decoration-[var(--color-accent)]/50 underline-offset-2 hover:decoration-[var(--color-accent)]"
+            >
+              {siteConfig.supportEmail}
+            </a>
           </p>
         </div>
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end">
