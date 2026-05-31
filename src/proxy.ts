@@ -2,38 +2,44 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 import { SESSION_COOKIE } from "@/lib/admin/constants";
+import { clearSessionCookieOnResponse, sessionFromCookieValue } from "@/lib/admin/session-cookie";
 
-/** Presence check only — full verification runs in server layouts and API routes. */
-function hasSessionCookie(request: NextRequest): boolean {
-  const token = request.cookies.get(SESSION_COOKIE)?.value;
-  return Boolean(token && token.includes("."));
-}
+const PUBLIC_ADMIN_PATHS = new Set(["/admin/login", "/admin/register"]);
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!pathname.startsWith("/admin")) return NextResponse.next();
 
-  const isLogin = pathname === "/admin/login";
-  const isRegister = pathname === "/admin/register";
-  const valid = hasSessionCookie(request);
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  const session = sessionFromCookieValue(token);
+  const hasInvalidCookie = Boolean(token && !session);
 
-  if (isLogin || isRegister) {
-    if (valid) {
+  if (PUBLIC_ADMIN_PATHS.has(pathname)) {
+    if (session) {
       return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    }
+    if (hasInvalidCookie) {
+      const res = NextResponse.next();
+      clearSessionCookieOnResponse(res);
+      return res;
     }
     return NextResponse.next();
   }
 
-  if (!valid) {
+  if (!session) {
     const login = new URL("/admin/login", request.url);
-    login.searchParams.set("next", pathname);
-    return NextResponse.redirect(login);
+    if (pathname !== "/admin") {
+      login.searchParams.set("next", pathname);
+    }
+    const res = NextResponse.redirect(login);
+    if (hasInvalidCookie) clearSessionCookieOnResponse(res);
+    return res;
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin", "/admin/:path*"],
 };

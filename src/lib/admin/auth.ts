@@ -1,12 +1,8 @@
 import { cookies } from "next/headers";
 
 import { SESSION_COOKIE } from "@/lib/admin/constants";
-import {
-  getSessionSecret,
-  signSession,
-  verifySession,
-  type SessionPayload,
-} from "@/lib/admin/crypto";
+import { getSessionSecret, signSession, type SessionPayload } from "@/lib/admin/crypto";
+import { sessionFromCookieValue } from "@/lib/admin/session-cookie";
 import { bootstrapAdminIfNeeded, readDb } from "@/lib/admin/store";
 
 export { SESSION_COOKIE };
@@ -24,9 +20,7 @@ export async function createSessionCookie(staffId: string): Promise<string> {
 
 export async function getSession(): Promise<SessionPayload | null> {
   const jar = await cookies();
-  const token = jar.get(SESSION_COOKIE)?.value;
-  if (!token) return null;
-  return verifySession(token, getSessionSecret());
+  return sessionFromCookieValue(jar.get(SESSION_COOKIE)?.value);
 }
 
 export async function requireSession(): Promise<SessionPayload> {
