@@ -4,7 +4,8 @@ import path from "path";
 import { hashPassword, newId } from "@/lib/admin/crypto";
 import { createDefaultChecklist } from "@/lib/admin/checklist";
 import { defaultCompanyProfile } from "@/lib/admin/defaults";
-import { normalizeDb } from "@/lib/admin/normalize-admin-db";
+import { emptyDb, normalizeDb } from "@/lib/admin/normalize-admin-db";
+import { isNextBuildPhase } from "@/lib/admin/runtime";
 import {
   isSupabasePrimaryStore,
   persistAdminDatabaseToSupabase,
@@ -37,6 +38,9 @@ async function ensureDbFile(): Promise<AdminDatabase> {
 
 export async function readDb(): Promise<AdminDatabase> {
   if (isSupabasePrimaryStore()) {
+    if (isNextBuildPhase()) {
+      return emptyDb();
+    }
     return readAdminDatabaseFromSupabase();
   }
   return ensureDbFile();

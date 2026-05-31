@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/admin/auth";
 import { bootstrapAdminIfNeeded } from "@/lib/admin/store";
 
+export const dynamic = "force-dynamic";
+
 /** Print/export routes: auth only — no dashboard sidebar or panel chrome. */
 export default async function AdminPrintLayout({ children }: { children: ReactNode }) {
   await bootstrapAdminIfNeeded();
