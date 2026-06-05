@@ -184,6 +184,10 @@ export type CompanyProfile = {
   companyNumber?: string;
   /** Public path e.g. /uploads/company/logo.png */
   logoPath?: string;
+  /** CallMeBot API key — WhatsApp auto-alerts on new website enquiries. */
+  callMeBotApiKey?: string;
+  /** E.164 digits for WhatsApp alerts (defaults to site WhatsApp number). */
+  whatsAppNotifyE164?: string;
 };
 
 export type EnquiryStatus = "new" | "follow_up" | "called" | "closed" | "converted";

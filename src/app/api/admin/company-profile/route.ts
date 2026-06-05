@@ -38,6 +38,14 @@ export async function PATCH(request: Request) {
         if (typeof body.logoPath === "string" && body.logoPath.trim()) return body.logoPath.trim();
         return cur.logoPath;
       })(),
+      callMeBotApiKey:
+        typeof body.callMeBotApiKey === "string"
+          ? body.callMeBotApiKey.trim() || undefined
+          : cur.callMeBotApiKey,
+      whatsAppNotifyE164:
+        typeof body.whatsAppNotifyE164 === "string"
+          ? body.whatsAppNotifyE164.replace(/\D/g, "") || undefined
+          : cur.whatsAppNotifyE164,
     };
   });
   await logActivity({

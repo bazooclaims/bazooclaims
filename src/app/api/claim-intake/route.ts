@@ -49,11 +49,17 @@ export async function POST(request: Request) {
     detail: enquiry.reference,
   });
 
-  const notifications = await notifyEnquirySubmitted({
-    ...parsed.data,
-    reference: enquiry.reference,
-    attachmentUrls: parsed.data.attachmentUrls ?? [],
-  });
+  const notifications = await notifyEnquirySubmitted(
+    {
+      ...parsed.data,
+      reference: enquiry.reference,
+      attachmentUrls: parsed.data.attachmentUrls ?? [],
+    },
+    {
+      callMeBotApiKey: db.companyProfile.callMeBotApiKey,
+      whatsAppNotifyE164: db.companyProfile.whatsAppNotifyE164,
+    },
+  );
 
   const persistence =
     process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY

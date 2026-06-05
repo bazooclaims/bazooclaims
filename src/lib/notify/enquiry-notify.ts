@@ -1,5 +1,6 @@
 import { siteConfig } from "@/config/site";
 import { enquiryIntakeWhatsAppMessage, type EnquiryWhatsAppInput } from "@/lib/enquiry-whatsapp";
+import { normalizeNotifyPhone, sendCallMeBotWhatsApp } from "@/lib/callmebot";
 
 export type EnquiryNotifyResult = {
   whatsapp: boolean;
@@ -11,33 +12,31 @@ export type EnquiryNotifyResult = {
   summary: string;
 };
 
-function notifyPhoneE164(): string | null {
-  const raw =
-    process.env.WHATSAPP_NOTIFY_E164?.trim() ||
-    process.env.NEXT_PUBLIC_WHATSAPP_E164?.trim() ||
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim();
-  if (!raw) return null;
-  let digits = raw.replace(/\D/g, "");
-  if (digits.startsWith("0") && digits.length >= 10 && digits.length <= 11) {
-    digits = `44${digits.slice(1)}`;
-  }
-  return digits.length >= 10 ? digits : null;
+export type EnquiryNotifyCredentials = {
+  callMeBotApiKey?: string;
+  whatsAppNotifyE164?: string;
+};
+
+function resolveNotifyPhone(credentials?: EnquiryNotifyCredentials): string | null {
+  return (
+    normalizeNotifyPhone(credentials?.whatsAppNotifyE164) ||
+    normalizeNotifyPhone(process.env.WHATSAPP_NOTIFY_E164) ||
+    normalizeNotifyPhone(process.env.NEXT_PUBLIC_WHATSAPP_E164) ||
+    normalizeNotifyPhone(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER)
+  );
+}
+
+function resolveCallMeBotKey(credentials?: EnquiryNotifyCredentials): string | undefined {
+  return (
+    credentials?.callMeBotApiKey?.trim() ||
+    process.env.WHATSAPP_CALLMEBOT_API_KEY?.trim() ||
+    undefined
+  );
 }
 
 function truncate(text: string, max: number): string {
   if (text.length <= max) return text;
   return `${text.slice(0, max - 1)}…`;
-}
-
-/** CallMeBot — free WhatsApp API (one-time activation at callmebot.com). */
-async function sendCallMeBotWhatsApp(phone: string, text: string, apiKey: string): Promise<boolean> {
-  const url = new URL("https://api.callmebot.com/whatsapp.php");
-  url.searchParams.set("phone", phone);
-  url.searchParams.set("text", truncate(text, 1400));
-  url.searchParams.set("apikey", apiKey);
-
-  const res = await fetch(url.toString(), { method: "GET", cache: "no-store" });
-  return res.ok;
 }
 
 /** Resend — free tier email (resend.com). */
@@ -117,10 +116,13 @@ function buildSummary(channels: Omit<EnquiryNotifyResult, "summary">): string {
  * Notify the business about a new enquiry. Tries every configured free channel in parallel.
  * Non-fatal: CRM save already succeeded before this runs.
  */
-export async function notifyEnquirySubmitted(data: EnquiryWhatsAppInput): Promise<EnquiryNotifyResult> {
+export async function notifyEnquirySubmitted(
+  data: EnquiryWhatsAppInput,
+  credentials?: EnquiryNotifyCredentials,
+): Promise<EnquiryNotifyResult> {
   const text = enquiryIntakeWhatsAppMessage(data);
-  const phone = notifyPhoneE164();
-  const callMeBotKey = process.env.WHATSAPP_CALLMEBOT_API_KEY?.trim();
+  const phone = resolveNotifyPhone(credentials);
+  const callMeBotKey = resolveCallMeBotKey(credentials);
   const notifyEmail =
     process.env.ENQUIRY_NOTIFY_EMAIL?.trim() || siteConfig.supportEmail;
 
@@ -133,7 +135,9 @@ export async function notifyEnquirySubmitted(data: EnquiryWhatsAppInput): Promis
 
   const [whatsapp, email, webhook, telegram, ntfy] = await Promise.all([
     phone && callMeBotKey
-      ? sendCallMeBotWhatsApp(phone, text, callMeBotKey).catch(() => false)
+      ? sendCallMeBotWhatsApp(phone, text, callMeBotKey)
+          .then((r) => r.ok)
+          .catch(() => false)
       : Promise.resolve(false),
     sendResendEmail(
       notifyEmail,
