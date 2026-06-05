@@ -50,6 +50,9 @@ export function StartClaimForm() {
   const [submitting, setSubmitting] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [whatsappEnquiry, setWhatsappEnquiry] = useState<EnquiryWhatsAppInput | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [notificationSummary, setNotificationSummary] = useState<string | null>(null);
+  const [whatsappNotified, setWhatsappNotified] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const skipInitialScrollRef = useRef(true);
 
@@ -102,6 +105,9 @@ export function StartClaimForm() {
     setReference(null);
     setYourReference(null);
     setWhatsappEnquiry(null);
+    setShowConfirmation(false);
+    setNotificationSummary(null);
+    setWhatsappNotified(false);
     try {
       let attachmentUrls = [...(parsed.data.attachmentUrls ?? [])];
       if (pendingFiles.length > 0) {
@@ -131,30 +137,31 @@ export function StartClaimForm() {
         reference?: string;
         clientReference?: string;
         error?: string;
+        notifications?: {
+          whatsapp?: boolean;
+          summary?: string;
+        };
       };
       if (!res.ok || !data.ok) {
         setServerMessage(data.error ?? "Something went wrong. Please try again.");
         return;
       }
-      setReference(data.reference ?? null);
-      setYourReference(data.clientReference?.trim() || null);
       const enquiryRef = data.reference ?? "";
+      setReference(enquiryRef);
+      setYourReference(data.clientReference?.trim() || null);
       setWhatsappEnquiry({
         ...parsed.data,
         reference: enquiryRef,
         attachmentUrls: attachmentUrls.length ? attachmentUrls : undefined,
       });
-      setServerMessage(
-        "Thank you — we have saved your enquiry in our system. " +
-          "Please tap the green WhatsApp button below and press Send so our team receives your details straight away. " +
-          "No formal claim file is opened yet; if we progress your case you will get a separate claim reference (e.g. BZ-00001). " +
-          "Your enquiry number is " +
-          enquiryRef +
-          ".",
-      );
+      setNotificationSummary(data.notifications?.summary ?? "Saved in our CRM — we will contact you shortly.");
+      setWhatsappNotified(Boolean(data.notifications?.whatsapp));
+      setShowConfirmation(true);
       setValues(empty);
       setPendingFiles([]);
       setStep(0);
+      setServerMessage(null);
+      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     } finally {
       setSubmitting(false);
     }
@@ -171,6 +178,92 @@ export function StartClaimForm() {
 
   const meta = STEPS_META[step];
   const whatsappUrl = whatsappEnquiry ? enquiryWhatsAppUrl(whatsappEnquiry) : null;
+
+  function resetForm() {
+    setShowConfirmation(false);
+    setReference(null);
+    setYourReference(null);
+    setWhatsappEnquiry(null);
+    setNotificationSummary(null);
+    setWhatsappNotified(false);
+    setClientError(null);
+    setServerMessage(null);
+    setValues(empty);
+    setPendingFiles([]);
+    setStep(0);
+  }
+
+  if (showConfirmation && reference) {
+    return (
+      <div
+        ref={panelRef}
+        className="mx-auto max-w-2xl rounded-2xl border border-emerald-200/80 bg-[var(--color-page-elevated)] p-6 shadow-lg sm:p-10"
+        role="status"
+        aria-live="polite"
+      >
+        <div className="flex flex-col items-center text-center">
+          <div
+            className="flex size-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700"
+            aria-hidden
+          >
+            <svg viewBox="0 0 24 24" className="size-9" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <h2 className="mt-5 text-2xl font-semibold tracking-tight text-[var(--color-ink)]">
+            Enquiry received
+          </h2>
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--color-ink-muted)] sm:text-base">
+            {notificationSummary}
+          </p>
+          <p className="mt-4 font-mono text-lg font-semibold text-[var(--color-surface)]">{reference}</p>
+          <p className="mt-1 text-xs text-[var(--color-ink-muted)]">Your enquiry number — quote this if you call us</p>
+          {yourReference ? (
+            <p className="mt-2 font-mono text-sm text-[var(--color-ink-muted)]">Your reference: {yourReference}</p>
+          ) : null}
+          {whatsappNotified ? (
+            <p className="mt-4 max-w-md rounded-lg border border-emerald-200/80 bg-emerald-50/80 px-4 py-3 text-sm text-emerald-950">
+              Our team has been notified on <strong>WhatsApp</strong> automatically. We will also contact you at the
+              email or phone you provided.
+            </p>
+          ) : whatsappUrl ? (
+            <div className="mt-6 flex w-full max-w-md flex-col gap-3">
+              <p className="text-sm text-[var(--color-ink-muted)]">
+                Optional: send a copy from your phone so we see it in WhatsApp instantly.
+              </p>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-105 touch-manipulation"
+              >
+                Send copy on WhatsApp
+              </a>
+            </div>
+          ) : null}
+          <p className="mt-6 max-w-md text-xs leading-relaxed text-[var(--color-ink-muted)]">
+            No formal claim file is opened yet. If we take your case forward you will receive a separate claim
+            reference (e.g. BZ-00001).
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={resetForm}
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-[var(--color-surface)] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[var(--color-surface-2)] touch-manipulation"
+            >
+              Submit another enquiry
+            </button>
+            <Link
+              href="/"
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-[var(--color-surface)]/20 px-6 py-2.5 text-sm font-semibold text-[var(--color-ink)] hover:bg-[var(--color-band)] touch-manipulation"
+            >
+              Back to home
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -585,44 +678,12 @@ export function StartClaimForm() {
           </div>
         ) : null}
 
-        {serverMessage ? (
+        {serverMessage && !showConfirmation ? (
           <div
-            className={cn(
-              "mt-6 rounded-md border px-4 py-3 text-sm",
-              reference
-                ? "border-emerald-200 bg-emerald-50 text-emerald-950"
-                : "border-red-200 bg-red-50 text-red-950",
-            )}
-            role="status"
+            className="mt-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-950"
+            role="alert"
           >
             {serverMessage}
-            {reference ? (
-              <p className="mt-1 font-mono text-xs text-emerald-900">Enquiry number (ours): {reference}</p>
-            ) : null}
-            {yourReference ? (
-              <p className="mt-1 font-mono text-xs text-emerald-900">Your reference: {yourReference}</p>
-            ) : null}
-            {whatsappUrl ? (
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-105 touch-manipulation"
-                >
-                  Send to WhatsApp
-                </a>
-                <p className="text-xs leading-relaxed text-emerald-900/90">
-                  Opens WhatsApp with your enquiry details prefilled — tap <strong>Send</strong> to
-                  complete.
-                </p>
-              </div>
-            ) : reference ? (
-              <p className="mt-3 text-xs leading-relaxed text-emerald-900/90">
-                WhatsApp is not configured on this site yet — we still have your enquiry in our CRM
-                and will contact you at the email or phone you provided.
-              </p>
-            ) : null}
           </div>
         ) : null}
 

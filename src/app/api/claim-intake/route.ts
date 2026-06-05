@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { bootstrapAdminIfNeeded, buildEnquiryFromIntake, logActivity, readDb, writeDb } from "@/lib/admin/store";
+import { notifyEnquirySubmitted } from "@/lib/notify/enquiry-notify";
 import { parseClaimIntake } from "@/lib/validators/claim-intake";
 import { syncEnquiryToSupabase } from "@/lib/supabase/sync-enquiry";
 import type { ClaimIntakeResponse } from "@/types/claim";
@@ -48,6 +49,12 @@ export async function POST(request: Request) {
     detail: enquiry.reference,
   });
 
+  const notifications = await notifyEnquirySubmitted({
+    ...parsed.data,
+    reference: enquiry.reference,
+    attachmentUrls: parsed.data.attachmentUrls ?? [],
+  });
+
   const persistence =
     process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
       ? "supabase"
@@ -58,5 +65,6 @@ export async function POST(request: Request) {
     reference: enquiry.reference,
     clientReference: enquiry.clientReference,
     persistence,
+    notifications,
   });
 }

@@ -20,4 +20,13 @@ export type ClaimIntakeResponse = {
   clientReference?: string;
   error?: string;
   persistence?: "none" | "supabase";
+  /** Which instant notification channels succeeded (server-side). */
+  notifications?: {
+    whatsapp: boolean;
+    email: boolean;
+    webhook: boolean;
+    telegram: boolean;
+    ntfy: boolean;
+    summary: string;
+  };
 };
