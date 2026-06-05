@@ -24,7 +24,7 @@ export async function signInWithSupabasePassword(
   return { accessToken: data.session.access_token };
 }
 
-/** Validate JWT with service role and set BAZOO admin session cookie. */
+/** Validate JWT with service role and set Bazoo Claims admin session cookie. */
 export async function issueSessionFromSupabaseAccessToken(accessToken: string): Promise<IssueResult> {
   const supabase = getSupabaseServiceRole();
   if (!supabase) {

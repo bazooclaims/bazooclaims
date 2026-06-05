@@ -1,4 +1,4 @@
--- BAZOOCLAIMS — optional Supabase mirror for enquiries (local JSON remains primary).
+-- Bazoo Claims — optional Supabase mirror for enquiries (local JSON remains primary).
 -- Run in Supabase SQL editor or via CLI after creating a project.
 
 create extension if not exists "uuid-ossp";

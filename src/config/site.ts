@@ -12,7 +12,7 @@ function resolveSiteUrl(): string {
 
 export const siteConfig = {
   name: "Bazoo Claims",
-  tagline: "BAZOO Accident Management",
+  tagline: "Bazoo Accident Management",
   description:
     "Enterprise motor claims management: replacement vehicles, repairs, recovery, and end-to-end claim handling — aligned with how leading UK accident management services operate.",
   locale: "en-GB",

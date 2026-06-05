@@ -3,7 +3,7 @@ import Image from "next/image";
 const scenes = [
   {
     src: "/brand/motor-bmw-bazoo.png",
-    alt: "BAZOO-branded executive saloon — representative of our accident management fleet context.",
+    alt: "Bazoo-branded executive saloon — representative of our accident management fleet context.",
   },
   {
     src: "/brand/motor-damaged-bmw.png",
@@ -12,7 +12,7 @@ const scenes = [
   },
   {
     src: "/brand/motor-mercedes-bazoo.png",
-    alt: "BAZOO accident management branded vehicle — professional UK motor claims service.",
+    alt: "Bazoo accident management branded vehicle — professional UK motor claims service.",
   },
 ] as const;
 
@@ -30,7 +30,7 @@ export function MotorImageryStrip() {
           UK motor claims &amp; fleet presence
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[var(--color-ink-muted)]">
-          BAZOO-branded imagery and representative damage context — for marketing and trust only,
+          Bazoo-branded imagery and representative damage context — for marketing and trust only,
           not a depiction of a specific live claim.
         </p>
         <ul className="mt-8 grid list-none gap-4 p-0 sm:grid-cols-3 sm:gap-5">

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
+import { CookieConsent } from "@/components/layout/CookieConsent";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
@@ -46,6 +47,7 @@ export function RootChrome({ children }: { children: React.ReactNode }) {
       ) : null}
       <main className="min-w-0 flex-1">{children}</main>
       <SiteFooter />
+      <CookieConsent />
       <WhatsAppFloat />
     </>
   );

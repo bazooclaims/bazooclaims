@@ -1,5 +1,7 @@
 import { useId } from "react";
 
+import { siteConfig } from "@/config/site";
+
 const phases = [
   {
     n: 1,
@@ -123,7 +125,7 @@ export function WorkflowSection() {
             id="workflow-heading"
             className="mt-3 text-balance text-2xl font-semibold tracking-tight text-[var(--color-ink)] sm:text-3xl lg:text-4xl"
           >
-            How the BAZOOCLAIMS workflow runs
+            How the {siteConfig.name} workflow runs
           </h2>
           <p className="mt-4 text-pretty text-sm leading-relaxed text-[var(--color-ink-muted)] sm:text-base">
             One accountable UK team from first call to closure. Real cases can overlap steps; this

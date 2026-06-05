@@ -1,4 +1,4 @@
--- BAZOOCLAIMS — optional Postgres mirror for the full admin / CRM JSON store.
+-- Bazoo Claims — optional Postgres mirror for the full admin / CRM JSON store.
 -- The app still uses data/admin-db.json as the source of truth unless you wire repositories.
 -- Apply after 001_enquiries.sql (or merge). Service role bypasses RLS for server writes.
 

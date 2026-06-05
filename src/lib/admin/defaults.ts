@@ -2,7 +2,7 @@ import type { CompanyProfile } from "@/types/admin";
 
 export function defaultCompanyProfile(): CompanyProfile {
   return {
-    legalName: "BAZOO Accident Management",
+    legalName: "Bazoo Accident Management",
     tradingName: "Bazoo Claims",
     addressLines: ["Enter your registered office address in Admin → Settings"],
     city: "",

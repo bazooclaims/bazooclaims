@@ -1,4 +1,4 @@
-BAZOOCLAIMS — folder map
+Bazoo Claims — folder map
 =======================
 
 public/          Static assets (logo-bazoo.png header; brand/ motor photography PNGs)

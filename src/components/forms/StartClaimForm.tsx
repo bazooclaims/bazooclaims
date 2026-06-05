@@ -4,6 +4,7 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import { siteConfig } from "@/config/site";
+import { enquiryWhatsAppUrl, type EnquiryWhatsAppInput } from "@/lib/enquiry-whatsapp";
 import { parseClaimIntake, validateClaimWizardStep } from "@/lib/validators/claim-intake";
 import type { ClaimIntakePayload } from "@/types/claim";
 import { cn } from "@/lib/utils";
@@ -48,6 +49,7 @@ export function StartClaimForm() {
   const [yourReference, setYourReference] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [whatsappEnquiry, setWhatsappEnquiry] = useState<EnquiryWhatsAppInput | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const skipInitialScrollRef = useRef(true);
 
@@ -99,6 +101,7 @@ export function StartClaimForm() {
     setServerMessage(null);
     setReference(null);
     setYourReference(null);
+    setWhatsappEnquiry(null);
     try {
       let attachmentUrls = [...(parsed.data.attachmentUrls ?? [])];
       if (pendingFiles.length > 0) {
@@ -135,11 +138,18 @@ export function StartClaimForm() {
       }
       setReference(data.reference ?? null);
       setYourReference(data.clientReference?.trim() || null);
+      const enquiryRef = data.reference ?? "";
+      setWhatsappEnquiry({
+        ...parsed.data,
+        reference: enquiryRef,
+        attachmentUrls: attachmentUrls.length ? attachmentUrls : undefined,
+      });
       setServerMessage(
-        "Thank you — we have your enquiry. We will review it and contact you shortly. " +
+        "Thank you — we have saved your enquiry in our system. " +
+          "Please tap the green WhatsApp button below and press Send so our team receives your details straight away. " +
           "No formal claim file is opened yet; if we progress your case you will get a separate claim reference (e.g. BZ-00001). " +
           "Your enquiry number is " +
-          (data.reference ?? "") +
+          enquiryRef +
           ".",
       );
       setValues(empty);
@@ -160,6 +170,7 @@ export function StartClaimForm() {
   }
 
   const meta = STEPS_META[step];
+  const whatsappUrl = whatsappEnquiry ? enquiryWhatsAppUrl(whatsappEnquiry) : null;
 
   return (
     <form
@@ -410,6 +421,10 @@ export function StartClaimForm() {
               erasure or access under UK GDPR; see our{" "}
               <Link href="/privacy-policy" className="font-medium text-[var(--color-surface)] underline">
                 privacy policy
+              </Link>{" "}
+              and{" "}
+              <Link href="/terms" className="font-medium text-[var(--color-surface)] underline">
+                terms &amp; conditions
               </Link>
               .
             </p>
@@ -586,6 +601,27 @@ export function StartClaimForm() {
             ) : null}
             {yourReference ? (
               <p className="mt-1 font-mono text-xs text-emerald-900">Your reference: {yourReference}</p>
+            ) : null}
+            {whatsappUrl ? (
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-105 touch-manipulation"
+                >
+                  Send to WhatsApp
+                </a>
+                <p className="text-xs leading-relaxed text-emerald-900/90">
+                  Opens WhatsApp with your enquiry details prefilled — tap <strong>Send</strong> to
+                  complete.
+                </p>
+              </div>
+            ) : reference ? (
+              <p className="mt-3 text-xs leading-relaxed text-emerald-900/90">
+                WhatsApp is not configured on this site yet — we still have your enquiry in our CRM
+                and will contact you at the email or phone you provided.
+              </p>
             ) : null}
           </div>
         ) : null}

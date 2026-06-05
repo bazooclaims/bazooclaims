@@ -4,6 +4,8 @@ import type { ReactElement } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
+import { siteConfig } from "@/config/site";
+
 type NavItem = {
   href: string;
   label: string;
@@ -155,7 +157,7 @@ export function AdminSidebar({
                 collapsed ? "truncate md:hidden" : "truncate"
               }`}
             >
-              BAZOOCLAIMS
+              {siteConfig.name}
             </p>
             {collapsed ? (
               <p

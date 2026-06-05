@@ -1,4 +1,4 @@
-This is **BAZOOCLAIMS** — a [Next.js](https://nextjs.org) motor claims site. Full product notes live in **[PROJECT.md](./PROJECT.md)**.
+This is **Bazoo Claims** — a [Next.js](https://nextjs.org) motor claims site. Full product notes live in **[PROJECT.md](./PROJECT.md)**.
 
 ## Getting Started
 

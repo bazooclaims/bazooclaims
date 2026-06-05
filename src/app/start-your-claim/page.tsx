@@ -16,9 +16,11 @@ export default function StartYourClaimPage() {
           Start your enquiry
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--color-ink-muted)] sm:mx-0 sm:mt-4 sm:text-base">
-          Complete the secure 6-step wizard below. We log this as an <strong className="text-[var(--color-ink)]">enquiry</strong>{" "}
-          first — we only open a formal <strong className="text-[var(--color-ink)]">claim</strong> file if we take your
-          case forward (you will then get a separate claim reference).
+          Complete the secure 6-step wizard below. We save your enquiry in our CRM immediately, then
+          show a <strong className="text-[var(--color-ink)]">Send to WhatsApp</strong> button so you
+          can deliver the same details to our team in one tap. We only open a formal{" "}
+          <strong className="text-[var(--color-ink)]">claim</strong> file if we take your case
+          forward (you will then get a separate claim reference).
         </p>
       </header>
       <div className="mt-8 sm:mt-10 pb-[max(5rem,env(safe-area-inset-bottom))]">

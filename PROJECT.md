@@ -1,6 +1,6 @@
-# BAZOOCLAIMS — project overview
+# Bazoo Claims — project overview
 
-Enterprise-style motor claims marketing site for **BAZOO Accident Management** / **BAZOOCLAIMS**, aimed at UK drivers who need replacement vehicles, repairs, and end-to-end claim support.
+Enterprise-style motor claims marketing site for **Bazoo Accident Management** / **Bazoo Claims**, aimed at UK drivers who need replacement vehicles, repairs, and end-to-end claim support.
 
 ## Stack
 

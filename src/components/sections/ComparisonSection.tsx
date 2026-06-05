@@ -1,3 +1,5 @@
+import { siteConfig } from "@/config/site";
+
 const rows = [
   "Calls answered quickly — minimal hold time.",
   "No-claims position protected where the route allows.",
@@ -10,10 +12,10 @@ export function ComparisonSection() {
     <section className="bg-[var(--color-band)] py-12 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <h2 className="max-w-3xl text-2xl font-semibold tracking-tight text-[var(--color-ink)] sm:text-3xl lg:text-4xl">
-          BAZOOCLAIMS vs going direct to your insurer — the enterprise difference
+          {siteConfig.name} vs going direct to your insurer — the enterprise difference
         </h2>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--color-ink-muted)] sm:text-base">
-          BAZOOCLAIMS is built for clarity, speed, and accountability — so you always know what
+          {siteConfig.name} is built for clarity, speed, and accountability — so you always know what
           happens next, who is acting for you, and how your no-claims position may be protected
           where the facts and law allow.
         </p>
@@ -27,7 +29,7 @@ export function ComparisonSection() {
                     What clients care about
                   </th>
                   <th className="px-3 py-3 text-center text-xs font-semibold text-[var(--color-surface)] sm:px-4 sm:text-sm">
-                    BAZOOCLAIMS
+                    {siteConfig.name}
                   </th>
                   <th className="px-3 py-3 text-center text-xs font-semibold text-[var(--color-ink-muted)] sm:px-4 sm:text-sm">
                     Typical direct insurer

@@ -5,7 +5,7 @@ import { bootstrapAdminIfNeeded } from "@/lib/admin/store";
 import { getSupabaseServiceRole } from "@/lib/supabase/server";
 
 /**
- * Exchange a Supabase access JWT (e.g. from a native client) for the BAZOO admin session cookie.
+ * Exchange a Supabase access JWT (e.g. from a native client) for the Bazoo Claims admin session cookie.
  * Prefer POST /api/admin/auth/login with email/password — it signs in on the server without a browser SDK.
  */
 export async function POST(request: Request) {

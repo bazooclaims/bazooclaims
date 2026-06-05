@@ -78,7 +78,7 @@ export async function bootstrapAdminIfNeeded(): Promise<void> {
 
   const email = (process.env.ADMIN_BOOTSTRAP_EMAIL ?? "admin@bazooclaims.co.uk").toLowerCase();
   const password = process.env.ADMIN_BOOTSTRAP_PASSWORD ?? "ChangeMe123!";
-  const name = process.env.ADMIN_BOOTSTRAP_NAME ?? "BAZOO Admin";
+  const name = process.env.ADMIN_BOOTSTRAP_NAME ?? "Bazoo Admin";
 
   const staff: StaffMember = {
     id: newId("staff"),
